@@ -15,36 +15,30 @@
 			body {
 				font-family: 'Open Sans', sans-serif;
 				font-size: 11px;
-				font-weight: 300;
-				fill: #242424;
-				text-align: center;
-				text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff;
+				font-weight: 300; 				 
 				cursor: default;
+    overflow: visible;
 			}
-			
-			.legend {
-				font-family: 'Raleway', sans-serif;
-				fill: #333333;
-			}
-			
-			.tooltip {
-				fill: #333333;
-			}
-
-        
             
-            .center{
+    .center{
     padding: 0 0;
     width: 500px;
     height: 500px; 
     position: absolute;
     top: 100px;
-    left: 100px;
+    left: 300px;
     display: flex;
     border:none;
     overflow: visible;
 }
 
+.radarWrapper {
+    transform: rotate(45deg);
+}
+
+svg {
+    overflow: visible;
+}
  
 
 
@@ -55,7 +49,10 @@
 
       
           
-                <div    class="center" id="my_dataviz"  ></div>
+                <div    class="center" id="detailskills-frontend"  ></div>
+                <div    class="center" id="detailskills-culture"  ></div>
+                <div    class="center" id="detailskills-cloud"  ></div>
+                <div    class="center" id="detailskills-backend"  ></div>
 
                 <div    class="center"  id="radarChart" >   </div>
        
@@ -66,9 +63,9 @@
 <script src="detailChart.js"></script>
 
  
+		<script src="detailskills.js">		</script>
 
 		<script src="mainskills.js">		</script>
-		<script src="detailskills.js">		</script>
   
 
 

@@ -39,8 +39,8 @@ const RadarChart = function RadarChart(parent_selector, data, options) {
 	}//wrap
 
 	const cfg = {
-	 w: 600,				//Width of the circle
-	 h: 600,				//Height of the circle
+	 w: 500,				//Width of the circle
+	 h: 500,				//Height of the circle
 	 margin: {top: 20, right: 20, bottom: 20, left: 20}, //The margins of the SVG
 	 levels: 3,				//How many levels or inner circles should there be drawn
 	 maxValue: 0, 			//What is the value that the biggest circle will represent
@@ -134,6 +134,7 @@ const RadarChart = function RadarChart(parent_selector, data, options) {
 		.style("filter" , "url(#glow)");
 
 	//Text indicating at what % each level is
+	/*
 	axisGrid.selectAll(".axisLabel")
 	   .data(d3.range(1,(cfg.levels+1)).reverse())
 	   .enter().append("text")
@@ -144,7 +145,7 @@ const RadarChart = function RadarChart(parent_selector, data, options) {
 	   .style("font-size", "10px")
 	   .attr("fill", "#737373")
 	   .text(d => d);
-
+*/
 	/////////////////////////////////////////////////////////
 	//////////////////// Draw the axes //////////////////////
 	/////////////////////////////////////////////////////////
@@ -168,12 +169,16 @@ const RadarChart = function RadarChart(parent_selector, data, options) {
 	//Append the labels at each axis
 	axis.append("text")
 		.attr("class", "legend")
-		.style("font-size", "11px")
+		.style("font-size", "15px")
 		.attr("text-anchor", "middle")
 		.attr("dy", "0.35em")
+		.attr('transform', (d,i)=>{
+			return 'translate( '+rScale(i)+' , '+0+'),'+ 'rotate(45)';})
 		.attr("x", (d,i) => rScale(maxValue * cfg.labelFactor) * cos(angleSlice * i - HALF_PI))
 		.attr("y", (d,i) => rScale(maxValue * cfg.labelFactor) * sin(angleSlice * i - HALF_PI))
-		.text(d => d)
+		.text(d => { 
+			return d;
+		})
 		.call(wrap, cfg.wrapWidth);
 
 	/////////////////////////////////////////////////////////
@@ -202,7 +207,9 @@ const RadarChart = function RadarChart(parent_selector, data, options) {
 		.attr("class", "radarArea")
 		.attr("d", d => radarLine(d.axes))
 		.style("fill", (d,i) => cfg.color(i))
-		.style("fill-opacity", cfg.opacityArea)
+		.style("fill-opacity", (d,i) => {
+			return (d.name === "IS") ? 0.3	: 0;
+		})
 		.on('mouseover', function(d, i) {
 			//Dim all blobs
 			parent.selectAll(".radarArea")
@@ -217,15 +224,24 @@ const RadarChart = function RadarChart(parent_selector, data, options) {
 			//Bring back all blobs
 			parent.selectAll(".radarArea")
 				.transition().duration(200)
-				.style("fill-opacity", cfg.opacityArea);
+				.style("fill-opacity", (d,i) => {
+					return (d.name === "IS") ? 0.3	: 0;
+				})
 		});
 
 	//Create the outlines
 	blobWrapper.append("path")
 		.attr("class", "radarStroke")
 		.attr("d", function(d,i) { return radarLine(d.axes); })
-		.style("stroke-width", cfg.strokeWidth + "px")
-		.style("stroke", (d,i) => cfg.color(i))
+		.style("stroke-width",(d,i) => {
+			return (d.name === "IS") ? "3px"	: "1px";
+		})
+		.style("stroke", (d,i) => {
+			return (d.name === "IS") ? cfg.color(i)	: cfg.color(i);
+		})
+		.style("stroke-dasharray",(d,i) => {
+			return (d.name === "IS") ? undefined	: (3,3);
+		})
 		.style("fill", "none")
 		.style("filter" , "url(#glow)");
 
