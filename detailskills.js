@@ -115,7 +115,7 @@ Object.keys(sampleData).forEach((label) => {
     let quadMax = 0;
     dataBars.forEach((dp) => {
         mainDataRaw[label] += dp.Value;
-        quadMax += 100;
+        quadMax += 60;
     })
     mainDataRaw[label] = Math.floor(100*(mainDataRaw[label]/quadMax));
 });
@@ -134,10 +134,10 @@ var mainData = [
     },
     { name: 'WANT',
         axes: [
-            {axis: 'Frontend', value: Math.floor(mainDataRaw["frontend"]*(1.5+(0.5-Math.random())))},
-            {axis: 'Culture', value:  Math.floor(mainDataRaw["culture"]*(1.5+(0.5-Math.random())))},
-            {axis: 'Cloud', value: Math.floor(mainDataRaw["cloud"]*(1.5+(0.5-Math.random())))},
-             {axis: 'Backend', value:  Math.floor(mainDataRaw["backend"]*(1.5+(0.5-Math.random())))}
+            {axis: 'Frontend', value: Math.floor(mainDataRaw["frontend"]*(1+(Math.floor(Math.random()*10)/10)))},
+            {axis: 'Culture', value:  Math.floor(mainDataRaw["culture"]*(1+(Math.floor(Math.random()*10)/10)))},
+            {axis: 'Cloud', value: Math.floor(mainDataRaw["cloud"]*(1+(Math.floor(Math.random()*10)/10)))},
+             {axis: 'Backend', value:  Math.floor(mainDataRaw["backend"]*(1+(Math.floor(Math.random()*10)/10)))}
         ]
     },
 ];
