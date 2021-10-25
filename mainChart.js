@@ -173,7 +173,9 @@ const RadarChart = function RadarChart(parent_selector, data, options) {
 		.attr("text-anchor", "middle")
 		.attr("dy", "0.35em")
 		.attr('transform', (d,i)=>{
-			return 'translate( '+rScale(i)+' , '+0+'),'+ 'rotate(45)';})
+			return "rotate(45)";
+		//	return 'translate( '+rScale(i)+' , '+0+'),'+ 'rotate(45)';
+		})
 		.attr("x", (d,i) => rScale(maxValue * cfg.labelFactor) * cos(angleSlice * i - HALF_PI))
 		.attr("y", (d,i) => rScale(maxValue * cfg.labelFactor) * sin(angleSlice * i - HALF_PI))
 		.text(d => { 

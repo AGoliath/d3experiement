@@ -1,73 +1,545 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/ >
-		<title>Smoothed D3.js Radar Chart</title>
 
-		<!-- Google fonts -->
-		<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300" rel='stylesheet' type='text/css'>
-		<link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<title>Smoothed D3.js Radar Chart</title>
 
-		<!-- D3.js -->
-		<script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
-		<script src="https://d3js.org/d3-path.v1.min.js" charset="utf-8"></script>
-<style>
-			body {
-				font-family: 'Open Sans', sans-serif;
-				font-size: 11px;
-				font-weight: 300; 				 
-				cursor: default;
-    overflow: visible;
+	<!-- Google fonts -->
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300" rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
+
+	<!-- D3.js -->
+	<script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+	<script src="https://d3js.org/d3-path.v1.min.js" charset="utf-8"></script>
+	<style>
+		body {
+			font-family: 'Open Sans', sans-serif;
+			font-size: 11px;
+			font-weight: 300;
+			cursor: default;
+			overflow: visible;
+		}
+
+		.center {
+			padding: 0 0;
+			width: 500px;
+			height: 500px;
+			position: absolute;
+			top: 100px;
+			left: 300px;
+			display: flex;
+			border: none;
+			overflow: visible;
+		}
+
+		.radarWrapper {
+			transform: rotate(45deg);
+		}
+
+		svg {
+			overflow: visible;
+		}
+
+		input.skillvalue {
+			width: 30px;
+
+		}
+	</style>
+
+</head>
+
+<body>
+
+
+
+
+	<div class="center" id="detailskills-frontend"></div>
+	<div class="center" id="detailskills-culture"></div>
+	<div class="center" id="detailskills-cloud"></div>
+	<div class="center" id="detailskills-backend"></div>
+
+	<div class="center" id="radarChart"> </div>
+
+	<div id="form" style=" position:absolute; top:600px;">
+
+	</div>
+	<div id="menu" style=" position:absolute; top:730px;">
+		<button type="button" onclick="updateFromForm() ; renderData()">
+			Render values from form
+		</button>
+		<button type="button" onclick="updateFromForm() ; calculateISandWANT() ; renderData()">
+			Calculate IS, randomize WANT and render
+		</button>
+
+		<br /> <br />
+		Generate more data:<br />
+		<button type="button" onclick="fillData(); renderData(); 	generateForm();">
+			Random
+		</button>
+
+		<button type="button" onclick="preset('0')">
+			Preset All 0
+		</button>
+		<button type="button" onclick="preset('1')">
+			Preset All 1
+		</button>
+		<button type="button" onclick="preset('frontend')">
+			Preset Frontend
+		</button>
+
+		<button type="button" onclick="preset('fullstack')">
+			Preset Fullstack
+		</button>
+
+		<button type="button" onclick="preset('cloud')">
+			Target Cloud eng
+		</button>
+
+		<button type="button" onclick="preset('evang')">
+			Target Evangelist
+		</button>
+	</div>
+
+
+
+
+
+
+	<script>
+		var mainData;
+		var sampleData;
+		var mainDataRaw;
+
+
+		function fillData(data, WANTdeltas) {
+
+			sampleData = data || {
+				frontend: {
+					data: [
+						{
+							Value: Math.floor(5 + Math.random() * 100),
+							Skill: "Angular"
+						},
+						{
+							Value: Math.floor(5 + Math.random() * 100),
+							Skill: "React"
+						},
+						{
+							Value: Math.floor(5 + Math.random() * 100),
+							Skill: "Vue"
+						},
+						{
+							Value: Math.floor(5 + Math.random() * 100),
+							Skill: "CI/CD"
+						},
+						{
+							Value: Math.floor(5 + Math.random() * 100),
+							Skill: "Testing"
+						}
+					],
+					quadrant: [0 * Math.PI, 0.5 * Math.PI]
+				},
+				cloud: {
+					data: [
+						{
+							Value: Math.floor(5 + Math.random() * 100),
+							Skill: "AWS"
+						},
+						{
+							Value: Math.floor(5 + Math.random() * 100),
+							Skill: "GCP"
+						},
+						{
+							Value: Math.floor(5 + Math.random() * 100),
+							Skill: "Azure"
+						},
+						{
+							Value: Math.floor(5 + Math.random() * 100),
+							Skill: "Container"
+						},
+						{
+							Value: Math.floor(5 + Math.random() * 100),
+							Skill: "IaC"
+						},
+						{
+							Value: Math.floor(5 + Math.random() * 100),
+							Skill: "CI/CD"
+						}
+					],
+					quadrant: [0.5 * Math.PI, 1 * Math.PI]
+				},
+				backend: {
+					data: [
+						{
+							Value: Math.floor(5 + Math.random() * 100),
+							Skill: "Java"
+						},
+						{
+							Value: Math.floor(5 + Math.random() * 100),
+							Skill: "ETL Tooling"
+						},
+						{
+							Value: Math.floor(5 + Math.random() * 100),
+							Skill: "Node"
+						},
+						{
+							Value: Math.floor(5 + Math.random() * 100),
+							Skill: "CI/CD"
+						},
+						{
+							Value: Math.floor(5 + Math.random() * 100),
+							Skill: "Testing"
+						}
+					],
+					quadrant: [1 * Math.PI, 1.5 * Math.PI]
+				},
+				culture: {
+					data: [
+						{
+							Value: Math.floor(5 + Math.random() * 100),
+							Skill: "Teaching"
+						},
+						{
+							Value: Math.floor(5 + Math.random() * 100),
+							Skill: "Leadership"
+						},
+						{
+							Value: Math.floor(5 + Math.random() * 100),
+							Skill: "Engagement"
+						},
+						{
+							Value: Math.floor(5 + Math.random() * 100),
+							Skill: "Public Relations"
+						},
+					],
+					quadrant: [1.5 * Math.PI, 2 * Math.PI]
+				}
+			};
+
+
+			mainDataRaw = mainDataRaw || {}
+
+			Object.keys(sampleData).forEach((label) => {
+				let dataBars = sampleData[label].data;
+				let quadrant = sampleData[label].quadrant;
+				mainDataRaw[label] = mainDataRaw[label] || 0;
+				let quadMax = 0;
+				dataBars.forEach((dp) => {
+					mainDataRaw[label] += dp.Value;
+					quadMax += 100;
+				})
+				mainDataRaw[label] = (mainDataRaw[label] / quadMax);
+			});
+
+
+			mainData = [
+
+				{
+					name: 'IS',
+					axes: [
+						{ axis: 'Frontend', value: mainDataRaw["frontend"] },
+						{ axis: 'Cloud', value: mainDataRaw["cloud"] },
+						{ axis: 'Backend', value: mainDataRaw["backend"] },
+						{ axis: 'Culture', value: mainDataRaw["culture"] }
+					]
+				},
+				{
+					name: 'WANT',
+					axes: [
+						{ axis: 'Frontend', value: WANTdeltas?.frontend || Math.min(1, mainDataRaw["frontend"] + 0.2) },
+						{ axis: 'Cloud', value: WANTdeltas?.cloud || Math.min(1, mainDataRaw["cloud"] + 0.2) },
+						{ axis: 'Backend', value: WANTdeltas?.backend || Math.min(1, mainDataRaw["backend"] + 0.2) },
+						{ axis: 'Culture', value: WANTdeltas?.culture || Math.min(1, mainDataRaw["culture"] + 0.2) }
+					]
+				},
+			];
+
+
+		}
+
+		function clearRender() {
+			document.getElementById("radarChart").innerHTML = "";
+			Object.keys(sampleData).forEach((label) => {
+				document.getElementById("detailskills-" + label).innerHTML = "";
+			})
+		}
+
+		function renderData() {
+
+			clearRender();
+
+
+
+
+			// set the dimensions and margins of the graph
+			var width = 500,
+				height = 500,
+				innerRadius = 10,
+				outerRadius = Math.min(width, height) / 2;   // the outerRadius goes from the middle of the SVG area to the border
+
+			var margin = { top: 0, right: 0, bottom: 0, left: 0 };
+
+
+			// radar chart
+			let svg_radar1 = RadarChart("#radarChart", mainData, {
+				w: width,				//Width of the circle
+				h: height,				//Height of the circle
+				margin: margin, //The margins of the SVG
+				levels: 3,				//How many levels or inner circles should there be drawn
+				maxValue: 1, 			//What is the value that the biggest circle will represent
+				labelFactor: 1.2, 	//How much farther than the radius of the outer circle should the labels be placed
+				wrapWidth: 640, 		//The number of pixels after which a label needs to be given a new line
+				opacityArea: 0.3, 	//The opacity of the area of the blob
+				dotRadius: 4, 			//The size of the colored circles of each blog
+				opacityCircles: 0.1, 	//The opacity of the circles of each blob
+				strokeWidth: 2, 		//The width of the stroke around each blob
+				roundStrokes: true,	//If true the area and stroke will follow a round path (cardinal-closed)
+				color: d3.scaleOrdinal(d3.schemeCategory10),	//Color function,
+				legend: { title: 'Skillset', translateX: 100, translateY: 40 },
+			});
+
+
+			Object.keys(sampleData).forEach((label) => {
+				let dataBars = sampleData[label].data;
+				let quadrant = sampleData[label].quadrant;
+
+				// append the svg object
+				var svg = d3.select("#detailskills-" + label)
+					.append("svg")
+					.attr("width", width + margin.left + margin.right)
+					.attr("height", height + margin.top + margin.bottom)
+					.append("g")
+					.attr("transform", "translate(" + (width / 2 + margin.left) + "," + (height / 2 + margin.top) + ")");
+
+
+
+				// Scales
+				var x = d3.scaleBand()
+					.range(quadrant)    // X axis goes from 0 to 2pi = all around the circle.
+					.align(0)                  // This does nothing
+					.domain(dataBars.map(function (d) { return d.Skill; })); // The domain of the X axis is the list of states.
+				var y = d3.scaleRadial()
+					.range([innerRadius, outerRadius])   // Domain will be define later.
+					.domain([0, 100]); // Domain of Y is from 0 to the max seen in the data
+
+				// Add the bars
+				svg.append("g")
+					.selectAll("path")
+					.data(dataBars)
+					.enter()
+					.append("path")
+					.attr("fill", "#69b3a2")
+					.style("fill-opacity", 0.3)
+					.attr("d", d3.arc()     // imagine your doing a part of a donut plot
+						.innerRadius(innerRadius)
+						.outerRadius(function (d) { return y(d['Value']); })
+						.startAngle(function (d) { return x(d.Skill); })
+						.endAngle(function (d) { return x(d.Skill) + x.bandwidth(); })
+						.padAngle(0.01)
+						.padRadius(innerRadius))
+
+				// Add the labels
+				svg.append("g")
+					.selectAll("g")
+					.data(dataBars)
+					.enter()
+					.append("g")
+					.attr("text-anchor", function (d) { return (x(d.Skill) + x.bandwidth() / 2 + Math.PI) % (2 * Math.PI) < Math.PI ? "end" : "start"; })
+					.attr("transform", function (d) { return "rotate(" + ((x(d.Skill) + x.bandwidth() / 2) * 180 / Math.PI - 90) + ")" + "translate(" + (y(d['Value']) + 10) + ",0)"; })
+					.append("text")
+					.text(function (d) { return (d.Skill) })
+					.attr("transform", function (d) { return (x(d.Skill) + x.bandwidth() / 2 + Math.PI) % (2 * Math.PI) < Math.PI ? "rotate(180)" : "rotate(0)"; })
+					.style("font-size", "11px")
+					.attr("alignment-baseline", "middle")
+
+
+			});
+		}
+
+
+	</script>
+
+
+
+
+	<script src="mainChart.js"></script>
+
+	<script src="detailChart.js"></script>
+
+
+	<script src="detailskills.js">		</script>
+
+	<script src="mainskills.js">		</script>
+
+
+	<script>
+
+		function generateForm() {
+
+			var f = document.getElementById("form");
+
+			let h = "";
+
+			Object.keys(sampleData).forEach((label, ind) => {
+				h += `<br /><b>${label}</b>`;
+				sampleData[label].data.forEach((val, index) => {
+					h += `&nbsp;${val.Skill}: <input class="skillvalue" id="level-${label}-${index}" value="${val.Value}" />`;
+				})
+
+				h += ` <b>IS:</b><input class="skillvalue" id="is-${ind}" value="${mainData[0].axes[ind].value}" />`;
+				h += ` <b>WANTS:</b><input class="skillvalue" id="wants-${ind}" value="${mainData[1].axes[ind].value}" />`;
+
+			})
+
+			f.innerHTML = h;
+
+		}
+
+		function updateFromForm() {
+
+			let list = document.getElementsByClassName("skillvalue")
+			for (let el of list) {
+				let val = parseFloat(el.value);
+				let id = el.id.split("-");
+				if (id[0] === "wants") {
+					mainData[1].axes[id[1]].value = val;
+				} else if (id[0] === "is") {
+					mainData[0].axes[id[1]].value = val;
+				} else {
+					sampleData[id[1]].data[id[2]].Value = val;
+				}
 			}
-            
-    .center{
-    padding: 0 0;
-    width: 500px;
-    height: 500px; 
-    position: absolute;
-    top: 100px;
-    left: 300px;
-    display: flex;
-    border:none;
-    overflow: visible;
-}
 
-.radarWrapper {
-    transform: rotate(45deg);
-}
+			renderData();
 
-svg {
-    overflow: visible;
-}
- 
+		}
 
 
-		</style>
-	
-	</head>
-	<body>
-
-      
-          
-                <div    class="center" id="detailskills-frontend"  ></div>
-                <div    class="center" id="detailskills-culture"  ></div>
-                <div    class="center" id="detailskills-cloud"  ></div>
-                <div    class="center" id="detailskills-backend"  ></div>
-
-                <div    class="center"  id="radarChart" >   </div>
-       
-
-    
-		<script src="mainChart.js"></script>	
-               
-<script src="detailChart.js"></script>
-
- 
-		<script src="detailskills.js">		</script>
-
-		<script src="mainskills.js">		</script>
-  
+		function updateTo(newVal, idpart) {
+			let list = document.getElementsByClassName("skillvalue")
+			for (let el of list) {
+				let val = parseFloat(el.value);
+				let id = el.id.split("-");
+				if (id.length > 2 && (idpart === "*" || id[1] === idpart)) {
+					el.value = newVal;
+				}
+			}
+		}
 
 
-	</body>
+		function calculateISandWANT() {
+
+			updateFromForm();
+			//first pass calculates correct mainData IS values, second pass sets WANT values
+			fillData(sampleData);
+			fillData(sampleData, {
+				frontend: Math.min(1, (Math.random() * 0.5) + mainData[0].axes[0].value),
+				cloud: Math.min(1, (Math.random() * 0.5) + mainData[0].axes[1].value),
+				backend: Math.min(1, (Math.random() * 0.5) + mainData[0].axes[2].value),
+				culture: Math.min(1, (Math.random() * 0.5) + mainData[0].axes[3].value)
+			});
+			updateForm();
+
+		}
+
+		function aggVal(cat, type, newVal) {
+			let el = document.getElementById(cat + "-" + type);
+			if (newVal !== undefined) el.value = newVal;
+			return el.value;
+
+		}
+
+		function preset(p) {
+			let list = document.getElementsByClassName("skillvalue")
+			switch (p) {
+				case "0":
+					updateTo(0, "*")
+					calculateISandWANT();
+					updateFromForm();
+					break;
+				case "1":
+					updateTo(100, "*")
+					calculateISandWANT();
+					updateFromForm();
+					break;
+				case "frontend":
+					updateTo(50 + Math.floor(Math.random() * 50), "frontend");
+					updateTo(20 + Math.floor(Math.random() * 20), "cloud");
+					updateTo(0 + Math.floor(Math.random() * 20), "backend");
+					updateTo(50 + Math.floor(Math.random() * 50), "culture");
+					calculateISandWANT();
+					aggVal("wants", "0", parseFloat(aggVal("is", "0")) + 0.3)
+					aggVal("wants", "1", parseFloat(aggVal("is", "1")) + 0.0)
+					aggVal("wants", "2", parseFloat(aggVal("is", "2")) + 0.0)
+					aggVal("wants", "3", parseFloat(aggVal("is", "3")) + 0.3)
+					updateFromForm();
+				break;
+				case "fullstack":
+					updateTo(50 + Math.floor(Math.random() * 20), "frontend");
+					updateTo(30 + Math.floor(Math.random() * 20), "cloud");
+					updateTo(50 + Math.floor(Math.random() * 20), "backend");
+					updateTo(20 + Math.floor(Math.random() * 20), "culture");
+					calculateISandWANT();
+					aggVal("wants", "0", parseFloat(aggVal("is", "0")) + 0.3)
+					aggVal("wants", "1", parseFloat(aggVal("is", "1")) + 0.0)
+					aggVal("wants", "2", parseFloat(aggVal("is", "2")) + 0.3)
+					aggVal("wants", "3", parseFloat(aggVal("is", "3")) + 0.0)
+					updateFromForm();
+				break;
+				case "cloud":
+					updateTo(0 + Math.floor(Math.random() * 30), "frontend");
+					updateTo(20 + Math.floor(Math.random() * 20), "cloud");
+					updateTo(30 + Math.floor(Math.random() * 40), "backend");
+					updateTo(50 + Math.floor(Math.random() * 50), "culture");
+					calculateISandWANT();
+					aggVal("wants", "0", parseFloat(aggVal("is", "0")) + 0.0)
+					aggVal("wants", "1", parseFloat(aggVal("is", "1")) + 0.5)
+					aggVal("wants", "2", parseFloat(aggVal("is", "2")) + 0.0)
+					aggVal("wants", "3", parseFloat(aggVal("is", "3")) + 0.0)
+					updateFromForm();
+				break;
+				case "evang":
+					updateTo(20 + Math.floor(Math.random() * 20), "frontend");
+					updateTo(20 + Math.floor(Math.random() * 20), "cloud");
+					updateTo(20 + Math.floor(Math.random() * 20), "backend");
+					updateTo(50 + Math.floor(Math.random() * 30), "culture");
+					calculateISandWANT();
+					aggVal("wants", "0", parseFloat(aggVal("is", "0")) + 0.0)
+					aggVal("wants", "1", parseFloat(aggVal("is", "1")) + 0.0)
+					aggVal("wants", "2", parseFloat(aggVal("is", "2")) + 0.0)
+					
+					aggVal("wants", "3", parseFloat(aggVal("is", "3")) + 0.5)
+					 
+					updateFromForm();
+				
+				break;
+
+
+
+			}
+			updateForm();
+		}
+
+		function updateForm() {
+			generateForm();
+			renderData();
+		}
+
+	</script>
+
+
+
+	<script>
+
+		fillData();
+		renderData();
+		generateForm();
+	</script>
+
+
+
+
+</body>
+
 </html>
