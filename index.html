@@ -45,11 +45,23 @@
 			width: 30px;
 
 		}
+
+		div.cstbox {
+			border: 1px solid grey;
+			position: absolute;
+			box-sizing: content-box;
+			display: table-cell;
+			top: 200px;
+			left: 350px;
+			width: 200px;
+			height: 150px;
+			backdrop-filter: blur(4px);
+		}
 	</style>
 
 </head>
 
-<body>
+<body id="body">
 
 
 
@@ -99,6 +111,22 @@
 		<button type="button" onclick="preset('evang')">
 			Target Evangelist
 		</button>
+		<br>
+		<br />
+
+		<button type="button" onclick="cst()">
+			Generate CST "Looking for" Chart (page refresh required afterwards)
+		</button>
+		<br />
+		<button type="button" onclick="cst('fe')">
+		CST Chart for Frontend Engineer
+		</button>
+		<button type="button" onclick="cst('ce')">
+		CST Chart for Cloud Engineer
+		</button>
+		<button type="button" onclick="cst('etl')">
+		CST Chart for ETL Expert
+		</button>
 	</div>
 
 
@@ -107,6 +135,7 @@
 
 
 	<script>
+		var cstMode = false;
 		var mainData;
 		var sampleData;
 		var mainDataRaw;
@@ -296,11 +325,13 @@
 				strokeWidth: 2, 		//The width of the stroke around each blob
 				roundStrokes: true,	//If true the area and stroke will follow a round path (cardinal-closed)
 				color: d3.scaleOrdinal(d3.schemeCategory10),	//Color function,
-				legend: { title: 'Skillset', translateX: 100, translateY: 40 },
+				legend: cstMode ? false : { title: 'Skillset', translateX: 100, translateY: 40 },
 			});
 
 
 			Object.keys(sampleData).forEach((label) => {
+				if (cstMode && label == "culture") return;
+
 				let dataBars = sampleData[label].data;
 				let quadrant = sampleData[label].quadrant;
 
@@ -474,7 +505,7 @@
 					aggVal("wants", "2", parseFloat(aggVal("is", "2")) + 0.0)
 					aggVal("wants", "3", parseFloat(aggVal("is", "3")) + 0.3)
 					updateFromForm();
-				break;
+					break;
 				case "fullstack":
 					updateTo(50 + Math.floor(Math.random() * 20), "frontend");
 					updateTo(30 + Math.floor(Math.random() * 20), "cloud");
@@ -486,7 +517,7 @@
 					aggVal("wants", "2", parseFloat(aggVal("is", "2")) + 0.3)
 					aggVal("wants", "3", parseFloat(aggVal("is", "3")) + 0.0)
 					updateFromForm();
-				break;
+					break;
 				case "cloud":
 					updateTo(0 + Math.floor(Math.random() * 30), "frontend");
 					updateTo(20 + Math.floor(Math.random() * 20), "cloud");
@@ -498,7 +529,7 @@
 					aggVal("wants", "2", parseFloat(aggVal("is", "2")) + 0.0)
 					aggVal("wants", "3", parseFloat(aggVal("is", "3")) + 0.0)
 					updateFromForm();
-				break;
+					break;
 				case "evang":
 					updateTo(20 + Math.floor(Math.random() * 20), "frontend");
 					updateTo(20 + Math.floor(Math.random() * 20), "cloud");
@@ -508,12 +539,12 @@
 					aggVal("wants", "0", parseFloat(aggVal("is", "0")) + 0.0)
 					aggVal("wants", "1", parseFloat(aggVal("is", "1")) + 0.0)
 					aggVal("wants", "2", parseFloat(aggVal("is", "2")) + 0.0)
-					
+
 					aggVal("wants", "3", parseFloat(aggVal("is", "3")) + 0.5)
-					 
+
 					updateFromForm();
-				
-				break;
+
+					break;
 
 
 
@@ -524,6 +555,250 @@
 		function updateForm() {
 			generateForm();
 			renderData();
+		}
+
+
+		function cst(p) {
+
+
+			document.getElementById("menu").innerHTML = "(page refresh to return to normal mode)"
+			updateFromForm();
+			clearRender();
+			
+			let pos = "Engineer";
+			if (p == "fe") {
+				pos = "Frontend Eng.";
+				fillData({
+					"frontend": {
+						"data": [
+							{
+								"Value": 100,
+								"Skill": "Angular"
+							},
+							{
+								"Value": 60,
+								"Skill": "CI/CD"
+							},
+							{
+								"Value": 60,
+								"Skill": "Testing"
+							}
+						],
+						"quadrant": [
+							0,
+							1.5707963267948966
+						]
+					},
+					"cloud": {
+						"data": [
+							{
+								"Value": 60,
+								"Skill": "AWS"
+							},
+
+							{
+								"Value": 40,
+								"Skill": "Container"
+							},
+							{
+								"Value": 40,
+								"Skill": "IaC"
+							},
+							{
+								"Value": 40,
+								"Skill": "CI/CD"
+							}
+						],
+						"quadrant": [
+							1.5707963267948966,
+							3.141592653589793
+						]
+					},
+					"backend": {
+						"data": [
+							{
+								"Value": 0,
+								"Skill": "Spring Boot"
+							}
+						],
+						"quadrant": [
+							3.141592653589793,
+							4.71238898038469
+						]
+					},
+					"culture": {
+						"data": [
+
+						],
+						"quadrant": [
+							4.71238898038469,
+							6.283185307179586
+						]
+					}
+				});
+
+			} else if (p == "ce") {
+				pos = "Cloud Eng.";
+				fillData({
+					"frontend": {
+						"data": [
+							{
+								"Value": 10,
+								"Skill": "Angular"
+							},
+							{
+								"Value": 10,
+								"Skill": "Vue"
+							}
+						],
+						"quadrant": [
+							0,
+							1.5707963267948966
+						]
+					},
+					"cloud": {
+						"data": [
+							{
+								"Value": 100,
+								"Skill": "GCP"
+							},
+							{
+								"Value": 80,
+								"Skill": "Container"
+							},
+							{
+								"Value": 100,
+								"Skill": "IaC"
+							},
+							{
+								"Value": 80,
+								"Skill": "CI/CD"
+							}
+						],
+						"quadrant": [
+							1.5707963267948966,
+							3.141592653589793
+						]
+					},
+					"backend": {
+						"data": [
+							{
+								"Value": 40,
+								"Skill": "Java"
+							},
+							{
+								"Value": 60,
+								"Skill": "Node"
+							},
+							{
+								"Value": 40,
+								"Skill": "CI/CD"
+							},
+							{
+								"Value": 40,
+								"Skill": "Testing"
+							}
+						],
+						"quadrant": [
+							3.141592653589793,
+							4.71238898038469
+						]
+					},
+					"culture": {
+						"data": [
+
+						],
+						"quadrant": [
+							4.71238898038469,
+							6.283185307179586
+						]
+					}
+				})
+			} else if (p == "etl") {
+
+				pos = "ETL Expert";
+				fillData({
+					"frontend": {
+						"data": [
+							{
+								"Value": 50,
+								"Skill": "Testing"
+							}
+						],
+						"quadrant": [
+							0,
+							1.5707963267948966
+						]
+					},
+					"cloud": {
+						"data": [
+						],
+						"quadrant": [
+							1.5707963267948966,
+							3.141592653589793
+						]
+					},
+					"backend": {
+						"data": [
+							{
+								"Value": 100,
+								"Skill": "ETL Tooling"
+							},
+							{
+								"Value": 50,
+								"Skill": "CI/CD"
+							},
+							{
+								"Value": 70,
+								"Skill": "Testing"
+							}
+						],
+						"quadrant": [
+							3.141592653589793,
+							4.71238898038469
+						]
+					},
+					"culture": {
+						"data": [
+
+						],
+						"quadrant": [
+							4.71238898038469,
+							6.283185307179586
+						]
+					}
+				})
+			}
+
+
+			cstMode = true;
+
+			sampleData.culture = undefined;
+			delete sampleData.culture;
+			mainData[1].axes = [];
+			mainDataRaw.culture = undefined;
+			delete mainDataRaw.culture;
+
+			mainData[0].axes[3] = {
+				value: 0,
+				id: "WANTS",
+				axis: ""
+			}
+
+			renderData();
+
+			let teamdiv = document.createElement("div");
+			teamdiv.setAttribute("class", "cstbox")
+			teamdiv.innerHTML = `
+			<b>CST: </b>FOO<br/>			
+			
+			<b>Position: </b>${pos}<br/>
+			<b>Travel?: </b>bi-weekly<br/>
+			<b>CST Leads: </b>Joe, Egon<br/>
+			<b>Tech Lead: </b>Aaron<br/>
+			`
+			document.getElementById("body").appendChild(teamdiv);
+
 		}
 
 	</script>
