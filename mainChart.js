@@ -23,7 +23,7 @@ const RadarChart = function RadarChart(parent_selector, data, options) {
 				y = text.attr("y"),
 				x = text.attr("x"),
 				dy = parseFloat(text.attr("dy")),
-				tspan = text.text(null).append("tspan").attr("x", x).attr("y", y).attr("dy", dy + "em");
+				tspan = text.text(null).append("tspan").attr("x", x).attr("y", y).attr("dy", dy + "em").style("fill","white");
 
 			while (word = words.pop()) {
 			  line.push(word);
@@ -32,7 +32,7 @@ const RadarChart = function RadarChart(parent_selector, data, options) {
 					line.pop();
 					tspan.text(line.join(" "));
 					line = [word];
-					tspan = text.append("tspan").attr("x", x).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+					tspan = text.append("tspan").attr("x", x).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").style("fill","white").text(word);
 			  }
 			}
 	  });
@@ -163,13 +163,14 @@ const RadarChart = function RadarChart(parent_selector, data, options) {
 		.attr("x2", (d, i) => rScale(maxValue *1.1) * cos(angleSlice * i - HALF_PI))
 		.attr("y2", (d, i) => rScale(maxValue* 1.1) * sin(angleSlice * i - HALF_PI))
 		.attr("class", "line")
-		.style("stroke", "white")
+		.style("stroke", "grey")
 		.style("stroke-width", "2px");
 
 	//Append the labels at each axis
 	axis.append("text")
 		.attr("class", "legend")
 		.style("font-size", "15px")
+		.style("fill", "grey")
 		.attr("text-anchor", "middle")
 		.attr("dy", "0.35em")
 		.attr('transform', (d,i)=>{
@@ -311,7 +312,8 @@ const RadarChart = function RadarChart(parent_selector, data, options) {
 				.attr("x", cfg.w - 70)
 				.attr("y", 10)
 				.attr("font-size", "12px")
-				.attr("fill", "#404040")
+			//	.attr("fill", "#404040")
+				.style("fill","white")
 				.text(cfg.legend.title);
 		}
 		let legend = legendZone.append("g")
@@ -337,6 +339,7 @@ const RadarChart = function RadarChart(parent_selector, data, options) {
 		  .attr("x", cfg.w - 52)
 		  .attr("y", (d,i) => i * 20 + 9)
 		  .attr("font-size", "11px")
+			.style("fill","white")
 		  .attr("fill", "#737373")
 		  .text(d => d);
 	}

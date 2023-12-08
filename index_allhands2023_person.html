@@ -73,16 +73,23 @@
 
 
 	<div class="center" id="detailskills-frontend"></div>
-	<div class="center" id="detailskills-culture"></div>
+	<div class="center" id="detailskills-data"></div>
 	<div class="center" id="detailskills-cloud"></div>
 	<div class="center" id="detailskills-backend"></div>
 
 	<div class="center" id="radarChart"> </div>
-
-	<div id="form" style=" position:absolute; top:600px;">
+<br />
+	<br />
+	<br />
+	<br />
+	<br />
+	<div id="form" style=" position:absolute; top:700px;">
 
 	</div>
-	<div id="menu" style=" position:absolute; top:730px;">
+	<br />
+	<br />
+	<br />
+	<div id="menu" style=" position:absolute; top:830px;">
 		<button type="button" onclick="updateFromForm() ; renderData()">
 			Render values from form
 		</button>
@@ -166,11 +173,11 @@
 						},
 						{
 							Value: Math.floor(5 + Math.random() * 100),
-							Skill: "CI/CD"
+							Skill: "Typescript"
 						},
 						{
 							Value: Math.floor(5 + Math.random() * 100),
-							Skill: "Testing"
+							Skill: "Mobile"
 						}
 					],
 					quadrant: [0 * Math.PI, 0.5 * Math.PI]
@@ -183,10 +190,10 @@
 						},
 						{
 							Value: Math.floor(5 + Math.random() * 100),
-							Skill: "GCP"
+							Skill: "Serverless"
 						},
 						{
-							Value: Math.floor(5 + Math.random() * 100),
+							Value: Math.floor(5 + Math.random() * 40),
 							Skill: "Azure"
 						},
 						{
@@ -196,10 +203,6 @@
 						{
 							Value: Math.floor(5 + Math.random() * 100),
 							Skill: "IaC"
-						},
-						{
-							Value: Math.floor(5 + Math.random() * 100),
-							Skill: "CI/CD"
 						}
 					],
 					quadrant: [0.5 * Math.PI, 1 * Math.PI]
@@ -212,7 +215,7 @@
 						},
 						{
 							Value: Math.floor(5 + Math.random() * 100),
-							Skill: "ETL Tooling"
+							Skill: "Spring Framework"
 						},
 						{
 							Value: Math.floor(5 + Math.random() * 100),
@@ -229,24 +232,20 @@
 					],
 					quadrant: [1 * Math.PI, 1.5 * Math.PI]
 				},
-				culture: {
+				data: {
 					data: [
 						{
 							Value: Math.floor(5 + Math.random() * 100),
-							Skill: "Teaching"
+							Skill: "MLOps"
 						},
 						{
 							Value: Math.floor(5 + Math.random() * 100),
-							Skill: "Leadership"
+							Skill: "Oracla DBs"
 						},
 						{
 							Value: Math.floor(5 + Math.random() * 100),
-							Skill: "Engagement"
-						},
-						{
-							Value: Math.floor(5 + Math.random() * 100),
-							Skill: "Public Relations"
-						},
+							Skill: "Python"
+						}
 					],
 					quadrant: [1.5 * Math.PI, 2 * Math.PI]
 				}
@@ -276,7 +275,7 @@
 						{ axis: 'Frontend', value: mainDataRaw["frontend"] },
 						{ axis: 'Cloud', value: mainDataRaw["cloud"] },
 						{ axis: 'Backend', value: mainDataRaw["backend"] },
-						{ axis: 'Culture', value: mainDataRaw["culture"] }
+						{ axis: 'Data & ML', value: mainDataRaw["data"] }
 					]
 				},
 				{
@@ -285,7 +284,7 @@
 						{ axis: 'Frontend', value: WANTdeltas?.frontend || Math.min(1, mainDataRaw["frontend"] + 0.2) },
 						{ axis: 'Cloud', value: WANTdeltas?.cloud || Math.min(1, mainDataRaw["cloud"] + 0.2) },
 						{ axis: 'Backend', value: WANTdeltas?.backend || Math.min(1, mainDataRaw["backend"] + 0.2) },
-						{ axis: 'Culture', value: WANTdeltas?.culture || Math.min(1, mainDataRaw["culture"] + 0.2) }
+						{ axis: 'Data & ML', value: WANTdeltas?.culture || Math.min(1, mainDataRaw["data"] + 0.2) }
 					]
 				},
 			];
@@ -385,6 +384,7 @@
 					.attr("text-anchor", function (d) { return (x(d.Skill) + x.bandwidth() / 2 + Math.PI) % (2 * Math.PI) < Math.PI ? "end" : "start"; })
 					.attr("transform", function (d) { return "rotate(" + ((x(d.Skill) + x.bandwidth() / 2) * 180 / Math.PI - 90) + ")" + "translate(" + (y(d['Value']) + 10) + ",0)"; })
 					.append("text")
+						.style("fill","white")
 					.text(function (d) { return (d.Skill) })
 					.attr("transform", function (d) { return (x(d.Skill) + x.bandwidth() / 2 + Math.PI) % (2 * Math.PI) < Math.PI ? "rotate(180)" : "rotate(0)"; })
 					.style("font-size", "11px")
